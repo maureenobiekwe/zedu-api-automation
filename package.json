@@ -1,0 +1,32 @@
+{
+  "name": "zedu-api-automation",
+  "version": "1.0.0",
+  "description": "API automation for Zedu Chat",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand --forceExit --detectOpenHandles",
+    "test:auth": "jest tests/auth.test.js --runInBand --forceExit",
+    "test:users": "jest tests/users.test.js --runInBand --forceExit",
+    "test:profile": "jest tests/profile.test.js --runInBand --forceExit",
+    "test:avatar": "jest tests/avatar.test.js --runInBand --forceExit",
+    "test:activity": "jest tests/activity.test.js --runInBand --forceExit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "ajv": "^8.20.0",
+    "dotenv": "^17.4.2",
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 30000,
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@faker-js/faker)"
+    ]
+  }
+}
