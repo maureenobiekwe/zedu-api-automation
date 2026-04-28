@@ -29,7 +29,7 @@ npm --version
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/zedu-api-automation.git
+git clone https://github.com/maureenobiekwe/zedu-api-automation
 cd zedu-api-automation
 npm install
 ```
