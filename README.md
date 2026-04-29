@@ -6,7 +6,6 @@ Automated API tests for the [Zedu platform](https://zedu.chat/) built with Jest 
 
 ![Test Results](test-results.png)
 
-## Demo
 
 ## Demo
 
