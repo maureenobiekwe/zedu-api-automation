@@ -8,7 +8,9 @@ Automated API tests for the [Zedu platform](https://zedu.chat/) built with Jest 
 
 ## Demo
 
-[![Watch the test run](https://cdn.loom.com/sessions/thumbnails/efc94715e9a84f3bbde15d48037e3938-with-play.gif)](https://www.loom.com/share/efc94715e9a84f3bbde15d48037e3938)
+## Demo
+
+[Watch the full test run on Loom](https://www.loom.com/share/efc94715e9a84f3bbde15d48037e3938)
 
 ## What it tests
 
