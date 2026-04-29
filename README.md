@@ -2,6 +2,10 @@
 
 Automated API tests for the [Zedu platform](https://zedu.chat/) built with Jest and Supertest. The whole point is that anyone can clone this, drop in a `.env` file and run the full test suite without needing to ask questions.
 
+## Test Results
+
+![Test Results](test-results.png)
+
 ## Demo
 
 [![Watch the test run](https://cdn.loom.com/sessions/thumbnails/efc94715e9a84f3bbde15d48037e3938-with-play.gif)](https://www.loom.com/share/efc94715e9a84f3bbde15d48037e3938)
