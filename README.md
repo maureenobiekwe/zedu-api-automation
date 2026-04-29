@@ -196,8 +196,6 @@ Registration tests use Faker.js to generate a new random email on every run. Thi
 
 ## Things I found while testing
 
-## Things I found while testing
-
 - The API lowercases emails when you register but when you try to login it does like an exact match. So if you register with `Test@Email.com`, you have to login with `test@email.com` or it wont work
 - TS-API-023 showed that the API accepts `<script>` tags in the name field without doing anything about it. It just registers the user with the script tag as their name
 - When I sent a fake image (just text content renamed to .png) the server crashed with a 500. It should have returned 400 but it didnt
