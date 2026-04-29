@@ -21,10 +21,10 @@ No hardcoded tokens anywhere. Every token is fetched from the API at runtime.
 
 Every test goes beyond just checking the status code. Here's what gets asserted across the suite:
 
-- **Status codes** — every test checks the HTTP status (200, 201, 400, 401, 404, 422 etc)
-- **Field presence** — checking that `access_token`, `user`, `message`, `status` fields exist in the response
-- **Data types** — schema validation using AJV confirms fields are strings, objects, arrays where expected
-- **Field values** — checking `status` is `"success"` or `"error"`, `message` matches expected patterns like `/exist/i` or `/required|validation/i`
+- **Status codes** — every test checks the HTTP status whether its 200, 201, 400, 401, 404, 422 etc
+- **Field presence** — this also checks that the `access_token`, `user`, `message`, `status` fields are all in the server response
+- **Data types** — to validate the schema AJV was used. This confirms the fields are strings, objects, arrays depending on the stated type for each field
+- **Field values** — It checks if `status` returns `"success"` or `"error"`, it checks the `message` for words like "exist" the "i" in `/exist/i` helps the server to ignore if its upper or lower case, the same is done for `/required|validation/i` only that it checks if either validation or required exists
 - **Error messages** — negative tests verify the API returns meaningful error messages, not just status codes
 - **Schema validation** — auth responses, profile responses, and error responses are all validated against defined JSON schemas
 - **Security checks** — SQL injection and XSS payloads are tested to make sure the server doesn't expose data or crash
@@ -58,19 +58,43 @@ The `.env` file goes in the **root folder** (same place as package.json).
 cp .env.example .env
 ```
 
-Open it and fill in your credentials:
+Then register a test account on the staging API. Run this in your terminal (replace the email and password with your own):
 
+```bash
+curl -s -X POST "https://api.staging.zedu.chat/api/v1/auth/register" -H "Content-Type: application/json" -d "{\"email\":\"youremail@example.com\",\"password\":\"YourPassword123\",\"first_name\":\"Your\",\"last_name\":\"Name\",\"username\":\"yourusername\"}"
+```
+
+If it returns `"User Created Successfully"`, your account is ready. Now open `.env` and fill it in:
 ```
 BASE_URL=https://api.staging.zedu.chat/api/v1
 TEST_EMAIL=your_email@example.com
 TEST_PASSWORD=YourPassword123
 ```
 
-The email and password need to be for an account that already exists on the Zedu staging platform.
+Use the same email and password you just registered with. Dont use special characters like `!` in the password just stick to letters and numbers.
 
 ### 3. Add a test image
 
-Drop any small `.png` image into the `utils/` folder and name it `test-image.png`. The avatar upload test needs it.
+Drop any small `.png` image into the `utils/` folder and name it `test-image.png`. The avatar upload test will use it to run
+
+## Setup Checklist
+
+- [ ] Cloned the repository
+- [ ] Ran `npm install`
+- [ ] Created `.env` file in the root folder
+- [ ] Registered a test account using the curl command above
+- [ ] Added TEST_EMAIL and TEST_PASSWORD to `.env`
+- [ ] Added BASE_URL to `.env`
+- [ ] Dropped a `test-image.png` into the `utils/` folder
+- [ ] Ran `npm test` and all 27 tests pass
+
+## Environment variables
+
+| Variable | Required | What it is |
+|---|---|---|
+| `BASE_URL` | Yes | API base URL, no trailing slash |
+| `TEST_EMAIL` | Yes | Email of existing test account |
+| `TEST_PASSWORD` | Yes | Password of existing test account |
 
 ## Running the tests
 
@@ -102,43 +126,43 @@ npx jest --runInBand --forceExit --verbose
 
 | Test ID | Type | What it does |
 |---|---|---|
-| TS-API-001 | Positive | Register new user, validate 201 + schema + success status |
-| TS-API-004 | Positive | Login with registered user, validate 200 + access_token exists |
-| TS-API-002 | Negative | Register duplicate email, validate 400 + error message matches /exist/ |
-| TS-API-003 | Negative | Register with missing fields, validate 422 + message matches /required/ |
-| TS-API-005 | Negative | Login wrong password, validate 400 + status is "error" |
-| TS-API-006 | Negative | Login unregistered email, validate 400 |
-| TS-API-007 | Negative | Register empty body, validate 422 + message field exists |
-| TS-API-008 | Negative | Login invalid email format, validate 400 |
-| TS-API-021 | Boundary | Register 300+ char email, validate 400 |
-| TS-API-EDGE-001 | Edge | Register with 128+ char password, validate 400 |
-| TS-API-EDGE-002 | Edge | Register with special characters in username, validate 201 |
-| TS-API-022 | Security | SQL injection in login password, validate 400 + error schema |
-| TS-API-023 | Security | XSS script tag in name field, validate server handles it |
+| TS-API-001 | Positive | Registers a new user. Checks 201, schema, and the status says "success" |
+| TS-API-004 | Positive | This logs in with the user we just registered. Checks 200 and that access_token is in the server response |
+| TS-API-002 | Negative | Tries to register the same email again. Should get 400 with a message about it already existing |
+| TS-API-003 | Negative | Sends only an email, no password or name. it should return 422 |
+| TS-API-005 | Negative | User tries logging in with the wrong password. Should get 400 and status "error" |
+| TS-API-006 | Negative | User attempts logging in with an email that was never registered. Gets 400 status code |
+| TS-API-007 | Negative | Sends a completely empty body to register and gets 422 status code |
+| TS-API-008 | Negative | User sends an email without @ symbol in the email field and gets 400 |
+| TS-API-021 | Boundary | Sends a 300+ character email. Server rejects it with 400 |
+| TS-API-EDGE-001 | Edge | Sends a 128+ character password. Server rejects it |
+| TS-API-EDGE-002 | Edge | If user registers with special characters in username. it retuns a success, 201 |
+| TS-API-022 | Security | Puts SQL injection in the password field while trying to log in. Server returns 400, and doesn't expose anything |
+| TS-API-023 | Security | Puts a script tag in the name field. Server accepts it blindly which is a bug |
 
 ### user.test.js (10 tests)
 
 | Test ID | Type | What it does |
 |---|---|---|
-| TS-API-017 | Positive | Update profile via multipart/form-data, validate 200 |
-| TS-API-009 | Positive | Access /users/me with valid token, validate 200 |
-| TS-API-012 | Positive | Get user by ID, validate 200 + profile schema |
-| TS-API-015 | Positive | Update user status with emoji, validate 200 |
-| TS-API-010 | Negative | Access /users/me with no token, validate 401 |
-| TS-API-011 | Negative | Access /users/me with fake token, validate 401 |
-| TS-API-013 | Negative | Search non-existent user ID, validate 400 |
-| TS-API-014 | Negative | Search with letters instead of UUID, validate 400 |
-| TS-API-016 | Negative | Update another user's status, validate 403 or 404 |
-| TS-API-EDGE-003 | Edge | SQL injection in URL path, validate 400/404 + error schema |
+| TS-API-017 | Positive | It updates the profile using form-data, a multipart and not JSON. I tried using JSON and the server rejected it. Now it returns 200 |
+| TS-API-009 | Positive | when user logs in, the endpoint receives a valid token. It returns 200 |
+| TS-API-012 | Positive | Searches for users successfully if the id is registered |
+| TS-API-015 | Positive | Users can update their status with a Unicode emoji. Gets 200 |
+| TS-API-010 | Negative | tries logging in and bypassing login, the endpoint recieves no token and the user gets blocked with 401 |
+| TS-API-011 | Negative | tries logging in with expired token, lets say a token generated from old passeord, user also gets blocked and recieves a 401 status code |
+| TS-API-013 | Negative | used faker to create and ID that doesnt exist, if one searches for it, they get a 400 as status code |
+| TS-API-014 | Negative | UUID are numbers, if letters are put, it returns a 400 status code |
+| TS-API-016 | Negative | If another user tries to update someone else's status. Should get 403 or 404 |
+| TS-API-EDGE-003 | Edge | Hacker sticks a SQL injection string in the URL path. Server handles it safely, returns 400/404 |
 
 ### avatar.test.js (4 tests)
 
 | Test ID | Type | What it does |
 |---|---|---|
-| TS-API-018 | Positive | Upload avatar with valid token, validate 200/201 |
-| TS-API-020 | Positive | List all avatars, validate 200/201 + body defined |
-| TS-API-019 | Negative | Upload avatar without token, validate 401 |
-| TS-API-EDGE-004 | Edge | Upload fake image content, validate server handles it |
+| TS-API-018 | Positive | If a user wants to update their avatar and has a valid token at the moment, it validate and returns 200/201 |
+| TS-API-020 | Positive | User, once logged in can see lists of all avatars to choose from, validate 200/201 |
+| TS-API-019 | Negative | If however user tries to upload avatar without token, validate 401 |
+| TS-API-EDGE-004 | Edge | if a fake image, or a text is used instead of a png or jpg or any other image format, server handles it |
 
 ## Project structure
 
@@ -172,29 +196,12 @@ Registration tests use Faker.js to generate a new random email on every run. Thi
 
 ## Things I found while testing
 
-- The API lowercases emails during registration but does exact match on login. If you register with `Test@Email.com`, you need to login with `test@email.com`
-- The XSS test (TS-API-023) showed that the API accepts `<script>` tags in the name field without sanitizing them
-- Uploading a fake image file (text content with .png extension) crashes the server with a 500 instead of returning a clean 400 error
-- The `/profile` endpoint requires `multipart/form-data`, not JSON — sending JSON returns 400
-- The `/users/{id}/status` endpoint requires a real Unicode emoji, not just the emoji name as text
+## Things I found while testing
 
-## Environment variables
+- The API lowercases emails when you register but when you try to login it does like an exact match. So if you register with `Test@Email.com`, you have to login with `test@email.com` or it wont work
+- TS-API-023 showed that the API accepts `<script>` tags in the name field without doing anything about it. It just registers the user with the script tag as their name
+- When I sent a fake image (just text content renamed to .png) the server crashed with a 500. It should have returned 400 but it didnt
+- I kept getting 400 on the profile update until I realized `/profile` wants multipart/form-data not JSON. Had to switch from `.send()` to `.field()`
+- The status update endpoint needs a real Unicode emoji character. I was sending the word "rocket" and it kept rejecting it
+-  Endpoint paths are case sensitive and spelling matters. I used `/avatar` instead of `/avatars` and kept getting 404 until I checked the Swagger docs and saw it has an "s" at the end. Small thing but it will waste your time if you dont catch it
 
-| Variable | Required | What it is |
-|---|---|---|
-| `BASE_URL` | Yes | API base URL, no trailing slash |
-| `TEST_EMAIL` | Yes | Email of existing test account |
-| `TEST_PASSWORD` | Yes | Password of existing test account |
-
-## Submission Checklist
-
-- [ ] Repository is **public** on GitHub
-- [ ] `.env` is in `.gitignore` and NOT committed
-- [ ] `.env.example` shows required variables without real values
-- [ ] `npm test` passes all 27 tests from a clean clone
-- [ ] No hardcoded tokens, URLs, or credentials anywhere in test files
-- [ ] `.env` contents shared with evaluators via Google Doc (not in repo)
-- [ ] Blog post published on Medium, LinkedIn, or X
-- [ ] GitHub repo link submitted
-- [ ] Google Doc link submitted
-- [ ] Blog post link submitted
