@@ -137,12 +137,12 @@ describe("Auth Automation Testing", () => {
   });
 
   test("TS-API-023 : Security: Submit XSS payload in name field", async () => {
-    const xssUser = createNewUser({ first_name: "<script>alert('xss')</script>" });
+    const xssUser = createNewUser({ first_name: "<script>alert(document.cookie)</script>" });
 
     const serverResponse = await api.post("/auth/register").send(xssUser);
     
     // the API doesnt sanitize XSS, it just accepts the payload and registers the user.
     // this is a finding worth noting
-    expect([201, 400]).toContain(serverResponse.status);
+    expect(serverResponse.status).toBe(400);
   });
 });

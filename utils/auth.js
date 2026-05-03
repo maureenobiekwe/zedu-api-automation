@@ -8,8 +8,8 @@ require("dotenv").config();
 // This helps to automate all my tests without the need of Chrome or Postman
 const supertest = require("supertest");
 
-// this helps to get the base url wiithout having to constantly paste the link
-const BASE_URL = process.env.BASE_URL;
+// this helps to get the base url wiithout having to constantly paste the link, I added a fallback just in case the base url doesnt exist in the env file
+const BASE_URL = process.env.BASE_URL || 'https://api.staging.zedu.chat/api/v1';
 const api = supertest(BASE_URL);
 
 
