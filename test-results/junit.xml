@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="27" failures="0" errors="0" time="143.983">
+  <testsuite name="Auth Automation Testing" errors="0" failures="0" skipped="0" timestamp="2026-05-03T14:28:59" time="125.832" tests="13">
+    <testcase classname="Auth Automation Testing TS-API-001 : Register a new user with all fields filled correctly" name="Auth Automation Testing TS-API-001 : Register a new user with all fields filled correctly" time="1.451">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-004 : User logs in with informations used to register" name="Auth Automation Testing TS-API-004 : User logs in with informations used to register" time="2.006">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-002 : Negative: Register with an already-existing email" name="Auth Automation Testing TS-API-002 : Negative: Register with an already-existing email" time="0.855">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-003 : Negative: Register with missing required fields" name="Auth Automation Testing TS-API-003 : Negative: Register with missing required fields" time="0.723">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-005 : Negative: Login with incorrect password" name="Auth Automation Testing TS-API-005 : Negative: Login with incorrect password" time="0.802">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-006 : Negative: Login with unregistered email" name="Auth Automation Testing TS-API-006 : Negative: Login with unregistered email" time="1.745">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-007 : Negative: Register with empty fields" name="Auth Automation Testing TS-API-007 : Negative: Register with empty fields" time="0.663">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-008 | Negative: Login with invalid email format (missing @)" name="Auth Automation Testing TS-API-008 | Negative: Login with invalid email format (missing @)" time="0.882">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-021 : Boundary: Register with extremely long email (300+ chars)" name="Auth Automation Testing TS-API-021 : Boundary: Register with extremely long email (300+ chars)" time="0.793">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-EDGE-001 : Edge: Password with maximum allowed length" name="Auth Automation Testing TS-API-EDGE-001 : Edge: Password with maximum allowed length" time="0.759">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-EDGE-002 : Edge: Username with special characters/emojis" name="Auth Automation Testing TS-API-EDGE-002 : Edge: Username with special characters/emojis" time="1.074">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-022 : Security: Submit SQL injection in Login Password" name="Auth Automation Testing TS-API-022 : Security: Submit SQL injection in Login Password" time="0.724">
+    </testcase>
+    <testcase classname="Auth Automation Testing TS-API-023 : Security: Submit XSS payload in name field" name="Auth Automation Testing TS-API-023 : Security: Submit XSS payload in name field" time="2.13">
+    </testcase>
+  </testsuite>
+  <testsuite name="User &amp; Profile Automation Testing" errors="0" failures="0" skipped="0" timestamp="2026-05-03T14:31:05" time="12.976" tests="10">
+    <testcase classname="User &amp; Profile Automation Testing TS-API-017 : Positive: User can update their information and it is stored" name="User &amp; Profile Automation Testing TS-API-017 : Positive: User can update their information and it is stored" time="0.929">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-009 : Positive: User can access endpoint with valid bearer token" name="User &amp; Profile Automation Testing TS-API-009 : Positive: User can access endpoint with valid bearer token" time="0.844">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-010 : Negative: Attempt to bypass login into a user account" name="User &amp; Profile Automation Testing TS-API-010 : Negative: Attempt to bypass login into a user account" time="0.721">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-011 : Negative: Stops access from anyone using old/invalid tokens" name="User &amp; Profile Automation Testing TS-API-011 : Negative: Stops access from anyone using old/invalid tokens" time="1.013">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-012 : Positive: Get user profile successfully registered" name="User &amp; Profile Automation Testing TS-API-012 : Positive: Get user profile successfully registered" time="0.792">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-013 : Negative: Searching for user profile that does not exist" name="User &amp; Profile Automation Testing TS-API-013 : Negative: Searching for user profile that does not exist" time="0.752">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-014 : Negative: Searching for user profile with letters instead of UUID" name="User &amp; Profile Automation Testing TS-API-014 : Negative: Searching for user profile with letters instead of UUID" time="0.706">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-015 : Positive: User can update status successfully" name="User &amp; Profile Automation Testing TS-API-015 : Positive: User can update status successfully" time="0.967">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-016 : Negative: Attempt to update another user&apos;s status" name="User &amp; Profile Automation Testing TS-API-016 : Negative: Attempt to update another user&apos;s status" time="0.851">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing TS-API-EDGE-003 : Edge: SQL injection in URL path" name="User &amp; Profile Automation Testing TS-API-EDGE-003 : Edge: SQL injection in URL path" time="0.856">
+    </testcase>
+  </testsuite>
+  <testsuite name="Avatar Automation Testing" errors="0" failures="0" skipped="0" timestamp="2026-05-03T14:31:18" time="4.74" tests="4">
+    <testcase classname="Avatar Automation Testing TS-API-018 : Positive: Users can upload avatar image while logged in" name="Avatar Automation Testing TS-API-018 : Positive: Users can upload avatar image while logged in" time="1.05">
+    </testcase>
+    <testcase classname="Avatar Automation Testing TS-API-020 : Positive: User can see all the list of avatar to choose from" name="Avatar Automation Testing TS-API-020 : Positive: User can see all the list of avatar to choose from" time="0.733">
+    </testcase>
+    <testcase classname="Avatar Automation Testing TS-API-019 : Negative: User tries to upload an avatar without being logged in" name="Avatar Automation Testing TS-API-019 : Negative: User tries to upload an avatar without being logged in" time="0.801">
+    </testcase>
+    <testcase classname="Avatar Automation Testing TS-API-EDGE-004 : Edge: Upload a non-image file (e.g. .txt) as an avatar" name="Avatar Automation Testing TS-API-EDGE-004 : Edge: Upload a non-image file (e.g. .txt) as an avatar" time="0.925">
+    </testcase>
+  </testsuite>
+</testsuites>

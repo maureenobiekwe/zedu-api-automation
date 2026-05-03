@@ -207,4 +207,4 @@ Registration tests use Faker.js to generate a new random email on every run. Thi
 - I kept getting 400 on the profile update until I realized `/profile` wants multipart/form-data not JSON. Had to switch from `.send()` to `.field()`
 - The status update endpoint needs a real Unicode emoji character. I was sending the word "rocket" and it kept rejecting it
 -  Endpoint paths are case sensitive and spelling matters. I used `/avatar` instead of `/avatars` and kept getting 404 until I checked the Swagger docs and saw it has an "s" at the end. Small thing but it will waste your time if you dont catch it
-
+- 
