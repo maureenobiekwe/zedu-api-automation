@@ -1,38 +1,95 @@
+[![QA Automation Pipeline](https://github.com/maureenobiekwe/zedu-api-automation/actions/workflows/ci.yml/badge.svg)](https://github.com/maureenobiekwe/zedu-api-automation/actions)
+
 # Zedu API Automation
 
-Automated API tests for the [Zedu platform](https://zedu.chat/) built with Jest and Supertest. The whole point is that anyone can clone this, drop in a `.env` file and run the full test suite without needing to ask questions.
+Automated API tests for the [Zedu platform](https://zedu.chat/) built with Jest, Supertest, and Zod. The whole point is that anyone can clone this, drop in a `.env` file and run the full test suite without needing to ask questions.
+
+---
+
+## Table of Contents
+
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Test Results](#test-results)
+- [Demo](#demo)
+- [What It Tests](#what-it-tests)
+- [What Each Test Validates](#what-each-test-validates)
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Environment Variables](#environment-variables)
+- [Running the Tests](#running-the-tests)
+- [Test Summary](#test-summary)
+- [Project Structure](#project-structure)
+- [How Authentication Works](#how-authentication-works)
+- [How Test Data Works](#how-test-data-works)
+- [Code Coverage](#code-coverage)
+- [Known Bugs & Findings](#known-bugs--findings)
+- [Git Workflow](#git-workflow)
+
+---
+
+## CI/CD Pipeline
+
+This project uses **GitHub Actions** for automated testing on every push and pull request to `main`.
+
+- To make sure the the ci.yml file works well and independent of the initial coder laptop or device the repository was first created. Some checklist before creating ci.yml file was taken.
+
+- Crosschecked that no hardcoded path in the code and the use of __dirname instead of coding a specific location on the system creating the code confirms that path hardcoding is false. This and among many other confirmation was done. also i made sure the environment base_url had a fallback, just in case the developer cloning doesnt put it in.
+
+- Also, the jest.config file was added and script in package.json to help jest run in the ci.yml folder and produce the Junit.xml file. 
+
+- By creating the file, everytime a code is pushed or pulled on the main or master branch. this file runs. It also makes sure that it always runs the latest code when you push codes quickly 3 consecutive times. 
+
+- The file runs on the linux machine named ubuntu, which install all dependemcies along with the node.js. the test is run, the outcome is made to make it more visually pleasing and it is saved and the Junit XML report created can be downloaded on any device it uploads events whether the paths fail or not. the coverage file gives more indepth of the lines of codes that were actually run. so the pipeline fails successfully if it is supposed to fail and pass if its supposed to pass. no silent fail passes
+
+- The CI configuration lives in `.github/workflows/ci.yml`. Environment variables (`TEST_EMAIL`, `TEST_PASSWORD`) are put as GitHub Secrets so no credentials are exposed in the codebase.
+
+[Back to top](#table-of-contents)
+
+---
 
 ## Test Results
 
 ![Test Results](test-results.png)
 
-
 ## Demo
 
 [Watch the full test run on Loom](https://www.loom.com/share/efc94715e9a84f3bbde15d48037e3938)
 
-## What it tests
+[Back to top](#table-of-contents)
+
+---
+
+## What It Tests
 
 | File | What it covers | Tests |
 |---|---|---|
 | `tests/auth.test.js` | Registration, login, duplicate emails, missing fields, SQL injection, XSS | 13 |
 | `tests/user.test.js` | Profile access, token auth, user search, status updates, SQL injection in URL | 10 |
 | `tests/avatar.test.js` | Upload avatar, list avatars, upload without auth, invalid file upload | 4 |
-| **Total** | | **27** |
+| `tests/extra.test.js` | Channels, contact form, testimonials, connection token, org invitations | 10 |
+| **Total** | | **37** |
 
 No hardcoded tokens anywhere. Every token is fetched from the API at runtime.
 
-## What each test validates
+[Back to top](#table-of-contents)
+
+---
+
+## What Each Test Validates
 
 Every test goes beyond just checking the status code. Here's what gets asserted across the suite:
 
 - **Status codes** — every test checks the HTTP status whether its 200, 201, 400, 401, 404, 422 etc
-- **Field presence** — this also checks that the `access_token`, `user`, `message`, `status` fields are all in the server response
-- **Data types** — to validate the schema AJV was used. This confirms the fields are strings, objects, arrays depending on the stated type for each field
-- **Field values** — It checks if `status` returns `"success"` or `"error"`, it checks the `message` for words like "exist" the "i" in `/exist/i` helps the server to ignore if its upper or lower case, the same is done for `/required|validation/i` only that it checks if either validation or required exists
+- **Field presence** — checks that the `access_token`, `user`, `message`, `status` fields are all in the server response
+- **Data types** — Zod schema validation confirms the fields are strings, objects, arrays depending on the stated type for each field
+- **Field values** — checks if `status` returns `"success"` or `"error"`, checks the `message` for words like "exist" using regex patterns like `/exist/i` (case-insensitive) and `/required|validation/i` (checks for either word)
 - **Error messages** — negative tests verify the API returns meaningful error messages, not just status codes
-- **Schema validation** — auth responses, profile responses, and error responses are all validated against defined JSON schemas
+- **Schema validation** — auth responses, profile responses, and error responses are all validated against defined Zod schemas in `utils/schemas.js`
 - **Security checks** — SQL injection and XSS payloads are tested to make sure the server doesn't expose data or crash
+
+[Back to top](#table-of-contents)
+
+---
 
 ## Prerequisites
 
@@ -44,6 +101,10 @@ Check with:
 node --version
 npm --version
 ```
+
+[Back to top](#table-of-contents)
+
+---
 
 ## Setup
 
@@ -70,19 +131,20 @@ curl -s -X POST "https://api.staging.zedu.chat/api/v1/auth/register" -H "Content
 ```
 
 If it returns `"User Created Successfully"`, your account is ready. Now open `.env` and fill it in:
+
 ```
 BASE_URL=https://api.staging.zedu.chat/api/v1
 TEST_EMAIL=your_email@example.com
 TEST_PASSWORD=YourPassword123
 ```
 
-Use the same email and password you just registered with. Dont use special characters like `!` in the password just stick to letters and numbers.
+Use the same email and password you just registered with. Dont use special characters like `!` in the password, just stick to letters and numbers.
 
 ### 3. Add a test image
 
-Drop any small `.png` image into the `utils/` folder and name it `test-image.png`. The avatar upload test will use it to run
+Drop any small `.png` image into the `utils/` folder and name it `test-image.png`. The avatar upload test will use it.
 
-## Setup Checklist
+### Setup Checklist
 
 - [ ] Cloned the repository
 - [ ] Ran `npm install`
@@ -91,9 +153,13 @@ Drop any small `.png` image into the `utils/` folder and name it `test-image.png
 - [ ] Added TEST_EMAIL and TEST_PASSWORD to `.env`
 - [ ] Added BASE_URL to `.env`
 - [ ] Dropped a `test-image.png` into the `utils/` folder
-- [ ] Ran `npm test` and all 27 tests pass
+- [ ] Ran `npm test` and all tests pass
 
-## Environment variables
+[Back to top](#table-of-contents)
+
+---
+
+## Environment Variables
 
 | Variable | Required | What it is |
 |---|---|---|
@@ -101,7 +167,13 @@ Drop any small `.png` image into the `utils/` folder and name it `test-image.png
 | `TEST_EMAIL` | Yes | Email of existing test account |
 | `TEST_PASSWORD` | Yes | Password of existing test account |
 
-## Running the tests
+In the CI pipeline, `BASE_URL` is set directly in the workflow file while `TEST_EMAIL` and `TEST_PASSWORD` are stored as GitHub Secrets (Settings → Secrets and variables → Actions).
+
+[Back to top](#table-of-contents)
+
+---
+
+## Running the Tests
 
 Run everything:
 ```bash
@@ -125,86 +197,168 @@ Run with detailed output to see each test name:
 npx jest --runInBand --forceExit --verbose
 ```
 
+Run with coverage report:
+```bash
+npm test -- --coverage
+```
+
+[Back to top](#table-of-contents)
+
+---
+
 ## Test Summary
 
 ### auth.test.js (13 tests)
 
 | Test ID | Type | What it does |
 |---|---|---|
-| TS-API-001 | Positive | Registers a new user. Checks 201, schema, and the status says "success" |
-| TS-API-004 | Positive | This logs in with the user we just registered. Checks 200 and that access_token is in the server response |
-| TS-API-002 | Negative | Tries to register the same email again. Should get 400 with a message about it already existing |
-| TS-API-003 | Negative | Sends only an email, no password or name. it should return 422 |
-| TS-API-005 | Negative | User tries logging in with the wrong password. Should get 400 and status "error" |
-| TS-API-006 | Negative | User attempts logging in with an email that was never registered. Gets 400 status code |
-| TS-API-007 | Negative | Sends a completely empty body to register and gets 422 status code |
-| TS-API-008 | Negative | User sends an email without @ symbol in the email field and gets 400 |
-| TS-API-021 | Boundary | Sends a 300+ character email. Server rejects it with 400 |
+| TS-API-001 | Positive | Registers a new user with valid fields. Checks 201, schema, and the status says "success" |
+| TS-API-004 | Positive | Logs in with the user we just registered. Checks 200 and that access_token exists |
+| TS-API-002 | Negative | Tries to register the same email again. Gets 400 with message about it already existing |
+| TS-API-003 | Negative | Sends only an email, no password or name. Returns 422 |
+| TS-API-005 | Negative | Logs in with the wrong password. Gets 400 and status "error" |
+| TS-API-006 | Negative | Logs in with an email that was never registered. Gets 400 |
+| TS-API-007 | Negative | Sends a completely empty body to register. Gets 422 |
+| TS-API-008 | Negative | Sends an email without @ symbol. Gets 400 |
+| TS-API-021 | Boundary | Sends a 300+ character email. Server rejects with 400 |
 | TS-API-EDGE-001 | Edge | Sends a 128+ character password. Server rejects it |
-| TS-API-EDGE-002 | Edge | If user registers with special characters in username. it retuns a success, 201 |
-| TS-API-022 | Security | Puts SQL injection in the password field while trying to log in. Server returns 400, and doesn't expose anything |
-| TS-API-023 | Security | Puts a script tag in the name field. Server accepts it blindly which is a bug |
+| TS-API-EDGE-002 | Edge | Registers with special characters in username. Returns 201 |
+| TS-API-022 | Security | SQL injection in the password field. Server returns 400 safely |
+| TS-API-023 | Security | XSS payload in name field. **Skipped — known bug, see findings below** |
 
 ### user.test.js (10 tests)
 
 | Test ID | Type | What it does |
 |---|---|---|
-| TS-API-017 | Positive | It updates the profile using form-data, a multipart and not JSON. I tried using JSON and the server rejected it. Now it returns 200 |
-| TS-API-009 | Positive | when user logs in, the endpoint receives a valid token. It returns 200 |
-| TS-API-012 | Positive | Searches for users successfully if the id is registered |
-| TS-API-015 | Positive | Users can update their status with a Unicode emoji. Gets 200 |
-| TS-API-010 | Negative | tries logging in and bypassing login, the endpoint recieves no token and the user gets blocked with 401 |
-| TS-API-011 | Negative | tries logging in with expired token, lets say a token generated from old passeord, user also gets blocked and recieves a 401 status code |
-| TS-API-013 | Negative | used faker to create and ID that doesnt exist, if one searches for it, they get a 400 as status code |
-| TS-API-014 | Negative | UUID are numbers, if letters are put, it returns a 400 status code |
-| TS-API-016 | Negative | If another user tries to update someone else's status. Should get 403 or 404 |
-| TS-API-EDGE-003 | Edge | Hacker sticks a SQL injection string in the URL path. Server handles it safely, returns 400/404 |
+| TS-API-017 | Positive | Updates profile using form-data (multipart, not JSON). Returns 200 |
+| TS-API-009 | Positive | Accesses endpoint with valid bearer token. Returns 200 |
+| TS-API-012 | Positive | Searches for user by valid ID. Returns 200 with profile schema |
+| TS-API-015 | Positive | Updates user status with Unicode emoji. Gets 200 |
+| TS-API-010 | Negative | Accesses endpoint with no token at all. Gets blocked with 401 |
+| TS-API-011 | Negative | Accesses endpoint with expired/invalid token. Gets blocked with 401 |
+| TS-API-013 | Negative | Searches for user with a fake UUID. Gets 400 |
+| TS-API-014 | Negative | Searches with letters instead of UUID. Gets 400 |
+| TS-API-016 | Negative | Tries to update another user's status. Gets 404 |
+| TS-API-EDGE-003 | Edge | SQL injection string in URL path. Server returns 400 safely |
 
 ### avatar.test.js (4 tests)
 
 | Test ID | Type | What it does |
 |---|---|---|
-| TS-API-018 | Positive | If a user wants to update their avatar and has a valid token at the moment, it validate and returns 200/201 |
-| TS-API-020 | Positive | User, once logged in can see lists of all avatars to choose from, validate 200/201 |
-| TS-API-019 | Negative | If however user tries to upload avatar without token, validate 401 |
-| TS-API-EDGE-004 | Edge | if a fake image, or a text is used instead of a png or jpg or any other image format, server handles it |
+| TS-API-018 | Positive | Uploads avatar with valid token. Returns 200/201 |
+| TS-API-020 | Positive | Lists all available avatars. Returns 200/201 |
+| TS-API-019 | Negative | Uploads avatar without auth token. Gets 401 |
+| TS-API-EDGE-004 | Edge | Uploads a fake image (text as .png). **Skipped — known bug, see findings below** |
 
-## Project structure
+### extra.test.js (10 tests)
+
+| Test ID | Type | What it does |
+|---|---|---|
+| TS-API-024 | Negative | This tries to create channel without auth token. Gets 401 |
+| TS-API-025 | Negative | Attempts creating channel with empty body. Gets 400 |
+| TS-API-026 | Positive | Submits message in contact us section with valid data. Gets 201 |
+| TS-API-027 | Negative | Attempt submitting message in contact us field with empty body. Gets 422 |
+| TS-API-028 | Edge | attemps submitting message in contact section with invalid email format. Gets 422 |
+| TS-API-029 | Negative | tried creating testimonial without auth token. Gets 401 |
+| TS-API-030 | Negative | Createing testimonial with empty body. Gets 422 |
+| TS-API-031 | Positive | should retrieves connection token with valid auth. Gets 200 with token |
+| TS-API-032 | Negative | user requesting connection token without auth. Gets 401 |
+| TS-API-033 | Edge | Sending invitation to users to join an organization where the sender has no/invalid organisation ID. Gets rejected |
+
+[Back to top](#table-of-contents)
+
+---
+
+## Project Structure
 
 ```
 zedu-api-automation/
+├── .github/
+│   └── workflows/
+│       └── ci.yml               # GitHub Actions CI pipeline
 ├── tests/
-│   ├── auth.test.js         # login, register, security tests
-│   ├── user.test.js         # profile, user search, status, auth guards
-│   └── avatar.test.js       # upload image, list avatars, edge cases
+│   ├── auth.test.js             # login, register, security tests
+│   ├── user.test.js             # profile, user search, status, auth guards
+│   ├── avatar.test.js           # upload image, list avatars, edge cases
+│   └── extra.test.js            # channels, contact, testimonials, token, invite
 ├── utils/
-│   ├── auth.js              # handles all token logic, no hardcoding
-│   ├── helpers.js           # faker data generation for idempotency
-│   ├── schemas.js           # AJV schema definitions
-│   └── test-image.png       # needed for avatar upload tests
-├── .env                     # your real credentials (DO NOT commit)
-├── .env.example             # template showing what variables are needed
+│   ├── auth.js                  # handles all token logic, no hardcoding
+│   ├── helpers.js               # faker data generation for idempotency
+│   ├── schemas.js               # Zod schema definitions for response validation
+│   └── test-image.png           # needed for avatar upload tests
+├── test-results/
+│   └── junit.xml                # generated test report (created by jest-junit)
+├── .env                         # your real env/credentials (DO NOT commit)
+├── .env.example                 # template showing what variables are needed
 ├── .gitignore
+├── jest.config.js               # Jest configuration with junit reporter
 ├── package.json
 └── README.md
 ```
 
-## How authentication works
+[Back to top](#table-of-contents)
+
+---
+
+## How Authentication Works
 
 `utils/auth.js` reads credentials from `.env` and calls the login endpoint to get a fresh token every time. No tokens are stored or hardcoded in the codebase. The `getAuthHeader()` function returns a ready-to-use header object that test files pass into their requests.
 
 For the user tests, the `beforeAll` block registers a brand new user and grabs the token directly from the registration response — no separate login call needed since the API returns `access_token` on register.
 
-## How test data works
+## How Test Data Works
 
 Registration tests use Faker.js to generate a new random email on every run. This means you can run the suite over and over without getting "email already exists" errors. Each test run is independent.
 
-## Things I found while testing
+[Back to top](#table-of-contents)
 
-- The API lowercases emails when you register but when you try to login it does like an exact match. So if you register with `Test@Email.com`, you have to login with `test@email.com` or it wont work
-- TS-API-023 showed that the API accepts `<script>` tags in the name field without doing anything about it. It just registers the user with the script tag as their name
-- When I sent a fake image (just text content renamed to .png) the server crashed with a 500. It should have returned 400 but it didnt
-- I kept getting 400 on the profile update until I realized `/profile` wants multipart/form-data not JSON. Had to switch from `.send()` to `.field()`
-- The status update endpoint needs a real Unicode emoji character. I was sending the word "rocket" and it kept rejecting it
--  Endpoint paths are case sensitive and spelling matters. I used `/avatar` instead of `/avatars` and kept getting 404 until I checked the Swagger docs and saw it has an "s" at the end. Small thing but it will waste your time if you dont catch it
-- 
+---
+
+## Code Coverage
+
+Since this project tests an **external API** (the Zedu staging server), code coverage measures our utility files (`auth.js`, `helpers.js`, `schemas.js`), not the API source code itself.
+
+
+The uncovered branches also known as the conditionals that weren't covered are mostly error handlers that will only be triggered when the first blocks of codes fail then the other is ran, just like an OR statement (e.g., `BASE_URL` not defined, token not found in response).
+
+To know and view the coverage report, I suggest downloading the `coverage-report` artifact from the GitHub Actions run, extract the ZIP, and open `lcov-report/index.html` in your browser.
+
+[Back to top](#table-of-contents)
+
+---
+
+## Known Bugs & Findings
+
+These are real issues I discovered while testing the Zedu API:
+
+**TS-API-023 — XSS payload accepted without sanitization**
+The API accepts `<script>alert(document.cookie)</script>` in the `first_name` field and registers the user using the script tag as their name. Expected behavior: server should reject with 400. Actual: returns 201. This test is **skipped** and documented as a known vulnerability until the backend team fixes it.
+
+**TS-API-EDGE-004 — Server crashes on invalid file upload**
+When sending text content disguised as a `.png` file, the server returns 500 instead of 400. The server doesn't validate file content, it just crashes. This test is **skipped** until the backend team adds proper file validation.
+
+**Email case sensitivity**
+The API lowercases emails on registration but does an exact match on login. If you register with `Test@Email.com`, you have to login with `test@email.com` or it wont work.
+
+**Profile endpoint expects multipart/form-data**
+The `/profile` PATCH endpoint rejects JSON bodies. Had to switch from `.send()` to `.field()` in Supertest. This isn't documented in the Swagger docs.
+
+**Status update requires real Unicode emoji**
+The status update endpoint needs actual emoji characters (e.g., `\u{1F680}`), not text like "rocket". Took a while to figure out.
+
+**Endpoint paths are case-sensitive**
+Used `/avatar` instead of `/avatars` and kept getting 404. Small thing but it wastes time if you dont catch it.
+
+[Back to top](#table-of-contents)
+
+---
+
+## Git Workflow
+
+This project follows a **feature branching** strategy to keep `main` stable:
+
+- Changes are made and pushed to the feature branches (e.g., `checkin/update`)
+- then when a create pull request is made, the ci.yml file is triggered and if the test fails, it isnt added the the main branch
+- CI runs automatically on every push to `main` and on pull requests
+
+[Back to top](#table-of-contents)
