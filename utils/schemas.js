@@ -1,95 +1,53 @@
-const Ajv = require("ajv");
-const ajv = new Ajv({ allErrors: true });
-
-//This schema is used for Login and registration
-
-const authSchema = {
-  type: "object",
-  required: ["status", "data"],
-  properties: {
-    status: { type: "string" },
-    data: {
-      type: "object",
-      required: ["access_token", "user"],
-      properties: {
-        access_token: { type: "string" },
-        user: { type: "object" }
-      }
-    }
-  }
-};
+const { z } = require("zod");
 
 
-const profileSchema = {
-  type: "object",
-  required: ["status", "data"],
-  properties: {
-    status: { type: "string" },
-    data: {
-      type: "object",
-      properties: {
-        schema: {
-          type: "object",
-          required: ["id", "email", "first_name", "last_name"]
-        }
-      }
-    }
-  }
-};
+const authSchema = z.object({
+  status: z.string(),
+  data: z.object({
+    access_token: z.string().min(1),
+    user: z.object({
+      id: z.string(),
+      email: z.string(),
+    }).passthrough() 
+  })
+});
 
-// This is used to know the available avatar on zedu
-const avatarSchema = {
-  type: "object",
-  required: ["status", "data"],
-  properties: {
-    status: { type: "string" },
-    data: {
-      type: "array",
-      items: {
-        type: "object",
-        required: ["name", "url", "size"]
-      }
-    }
-  }
-};
+const profileSchema = z.object({
+  status: z.string(),
+  data: z.object({
+    id: z.string(),
+    email: z.string(),
+    name: z.string(),
+    profile: z.object({
+      first_name: z.string(),
+      last_name: z.string(),
+    }).passthrough()
+  }).passthrough()
+});
 
- 
-const activitySchema = {
-  type: "object",
-  required: ["status", "data", "pagination"],
-  properties: {
-    status: { type: "string" },
-    data: {
-      type: "array",
-      items: {
-        type: "object",
-        required: ["thread_id", "message", "username"]
-      }
-    },
-    pagination: {
-      type: "object",
-      required: ["current_page", "total_pages"]
-    }
-  }
-};
 
-// This is used to catch errors and display a clear message of what went wrong
-const errorSchema = {
-  type: "object",
-  required: ["message"],
-  properties: {
-    message: { type: "string" },
-    status_code: { type: "number" }
-  },
-  additionalProperties: true
-};
+const avatarSchema = z.object({
+  status: z.string(),
+  data: z.array(
+    z.object({
+      name: z.string(),
+      url: z.string(),
+      size: z.number(),
+    }).passthrough()
+  )
+});
+
+
+const errorSchema = z.object({
+  message: z.string().min(1),
+}).passthrough();  // allows extra fields like status_code
+
 
 function validateSchema(schema, data) {
-  const validate = ajv.compile(schema);
-  const valid = validate(data);
+  const result = schema.safeParse(data);
   return {
-    valid,
-    errors: validate.errors ? ajv.errorsText(validate.errors) : null,
+    valid: result.success,
+    errors: result.success ? null : result.error.issues.map(e => `${e.path.join(".")}: ${e.message}`).join(", "),
   };
 }
 
@@ -98,8 +56,7 @@ module.exports = {
     auth: authSchema,
     profile: profileSchema,
     avatar: avatarSchema,
-    activity: activitySchema,
-    error: errorSchema
+    error: errorSchema,
   },
   validateSchema,
 };

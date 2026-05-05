@@ -42,7 +42,7 @@ describe("User & Profile Automation Testing", () => {
   // the /profile endpoint requires multipart/form-data, not JSON
   // i had to use .field() instead of .send() because of this
 
-  test("TS-API-017 : Positive: User can update their information and it is stored", async () => {
+  test("should update user profile with valid information or data type", async () => {
     const serverResponse = await api
       .patch("/profile")
       .set(authHeader)
@@ -53,63 +53,63 @@ describe("User & Profile Automation Testing", () => {
 
   // AUTHORIZATION 
 
-  test("TS-API-009 : Positive: User can access endpoint with valid bearer token", async () => {
+  test("should access endpoint with valid bearer token of the user", async () => {
     const serverResponse = await api.get("/users/me").set(authHeader);
     expect(serverResponse.status).toBe(200);
   });
 
-  test("TS-API-010 : Negative: Attempt to bypass login into a user account", async () => {
+  test("should return 401 if attempt to bypass login into a user account is sensed", async () => {
     const serverResponse = await api.get("/users/me"); // No token at all
     expect(serverResponse.status).toBe(401);
   });
 
-  test("TS-API-011 : Negative: Stops access from anyone using old/invalid tokens", async () => {
+  test("should return 401 when anyone uses old/invalid tokens", async () => {
     const serverResponse = await api.get("/users/me").set({ Authorization: "Bearer expired.token.here" });
     expect(serverResponse.status).toBe(401);
   });
 
   // USER SEARCH
    
-  test("TS-API-012 : Positive: Get user profile successfully registered", async () => {
+  test("should return profiles of users that are successfully registered", async () => {
     const serverResponse = await api.get(`/users/${dynamicUserId}`).set(authHeader);
     expect(serverResponse.status).toBe(200);
     expect(validateSchema(schemas.profile, serverResponse.body).valid).toBe(true);
   });
 
-  test("TS-API-013 : Negative: Searching for user profile that does not exist", async () => {
+  test("should return 400 if user profile that does not exist is searched", async () => {
     const fakeId = IdDoesntExist(); // dynamic ID so it works every time
     const serverResponse = await api.get(`/users/${fakeId}`).set(authHeader);
     expect(serverResponse.status).toBe(400);
   });
 
-  test("TS-API-014 : Negative: Searching for user profile with letters instead of UUID", async () => {
+  test("should return 400 if user profile is searched with letters instead of UUID", async () => {
     const serverResponse = await api.get("/users/not-a-uuid").set(authHeader);
     expect(serverResponse.status).toBe(400);
   });
 
-  test("TS-API-015 : Positive: User can update status successfully", async () => {
+  test("should allow users update status successfully", async () => {
     const statusData = { status_text: "public", emoji: "\u{1F680}" };
     const serverResponse = await api.patch(`/users/${dynamicUserId}/status`).set(authHeader).send(statusData);
     expect(serverResponse.status).toBe(200);
   });
 
-  test("TS-API-016 : Negative: Attempt to update another user's status", async () => {
+  test("should reject attempt to update another user's status", async () => {
     const strangerId = IdDoesntExist();
     const serverResponse = await api.patch(`/users/${strangerId}/status`).set(authHeader).send({ status: "private" });
     
-    // Should be Forbidden or Not Found, depends on how the API handles it
-    expect([403, 404]).toContain(serverResponse.status);
+    
+    expect(serverResponse.status).toBe(403);
   });
 
    // EDGE SECURITY TEST
   
-  test("TS-API-EDGE-003 : Edge: SQL injection in URL path", async () => {
+  test("should handle SQL injection in URL path safely", async () => {
     const maliciousPathId = "DROP TABLE users"; 
     
     const serverResponse = await api.get(`/users/${maliciousPathId}`).set(authHeader);
 
-    // server should treat this as Bad Request or Not Found, not actually try to run the command
-    expect([400, 404]).toContain(serverResponse.status);
+    
+    expect(serverResponse.status).toBe(400);
     const check = validateSchema(schemas.error, serverResponse.body);
     expect(check.valid).toBe(true);
   });
