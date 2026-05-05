@@ -55,10 +55,11 @@ So if you are using Mac/Linux, use the terminal app, genrally, that is, Windows 
 
 Use the same email and password you just registered with and 
 
-Run in bash:
+Run :
+```bash
 chmod +x setup.sh
 ./setup.sh <your-email> <your-password>
-
+```
 
 
 However, if you prefer the manual setup, use the instructions provided in [Manual Setup](#manual-setup) below.
