@@ -5,7 +5,7 @@
  * Positive cases  : 3
  * Negative cases  : 5
  * Edge cases      : 2
- * Total           : 10
+ * Total           : 11
  */
 
 const { api, getAuthHeader } = require("../utils/auth");
@@ -129,3 +129,15 @@ describe("Extended API Automation Testing", () => {
     expect(serverResponse.status).toBe(404);
   });
 });
+
+
+// EMAIL DOMAIN VALIDATION
+  test.skip("TS-API-034 : should reject registration with non-existent email domain", async () => {
+    const fakeEmail = createNewUser({ email: "testuser@averyfakedomain.bat" });
+    const serverResponse = await api.post("/auth/register").send(fakeEmail);
+    
+    // KNOWN BUG: API accepts emails with non-existent domains. skipping this test and writing a report. it will run when the backend team has fixed it
+    // Expected: 400 (reject fake domain)
+    // Actual: 200
+    expect(serverResponse.status).toBe(400);
+  });
