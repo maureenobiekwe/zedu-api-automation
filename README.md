@@ -289,8 +289,8 @@ npm --version
 
 | Type | What it does |
 |---|---|
-| Positive | Uploads avatar with valid token. Returns 200/201 |
-| Positive | Lists all available avatars. Returns 200/201 |
+| Positive | Uploads avatar with valid token. Returns 201 |
+| Positive | Lists all available avatars. Returns 200 |
 | Negative | Uploads avatar without auth token. Gets 401 |
 | Edge | Uploads a fake image (text as .png). **Skipped — known bug, see findings below** |
 

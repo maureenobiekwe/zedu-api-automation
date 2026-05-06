@@ -1,87 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="38" failures="0" errors="0" time="67.58">
-  <testsuite name="Extended API Automation Testing" errors="0" failures="0" skipped="1" timestamp="2026-05-05T08:04:42" time="33.987" tests="11">
-    <testcase classname="Extended API Automation Testing" name="should reject channel creation without auth token" time="0.826">
+<testsuites name="jest tests" tests="38" failures="1" errors="0" time="62.241">
+  <testsuite name="Extended API Automation Testing" errors="0" failures="0" skipped="1" timestamp="2026-05-06T04:10:09" time="34.229" tests="11">
+    <testcase classname="Extended API Automation Testing" name="should reject channel creation without auth token" time="0.707">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should reject channel creation with missing required fields" time="1.915">
+    <testcase classname="Extended API Automation Testing" name="should reject channel creation with missing required fields" time="0.729">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should submit a contact us message with valid data" time="0.731">
+    <testcase classname="Extended API Automation Testing" name="should submit a contact us message with valid data" time="0.735">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should reject a message in the contact us with missing required fields" time="0.801">
+    <testcase classname="Extended API Automation Testing" name="should reject a message in the contact us with missing required fields" time="0.706">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should reject a message in the contact us with invalid email format" time="0.892">
+    <testcase classname="Extended API Automation Testing" name="should reject a message in the contact us with invalid email format" time="0.696">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should reject testimonial creation without auth token" time="0.743">
+    <testcase classname="Extended API Automation Testing" name="should reject testimonial creation without auth token" time="0.682">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should reject testimonial creation with empty body" time="0.947">
+    <testcase classname="Extended API Automation Testing" name="should reject testimonial creation with empty body" time="0.693">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should retrieve connection token with valid auth" time="0.735">
+    <testcase classname="Extended API Automation Testing" name="should retrieve connection token with valid auth" time="0.721">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should reject connection token request without auth" time="0.672">
+    <testcase classname="Extended API Automation Testing" name="should reject connection token request without auth" time="0.655">
     </testcase>
-    <testcase classname="Extended API Automation Testing" name="should reject invitation with invalid organisation ID" time="0.823">
+    <testcase classname="Extended API Automation Testing" name="should reject invitation with invalid organisation ID" time="0.698">
     </testcase>
     <testcase classname="" name="TS-API-034 : should reject registration with non-existent email domain" time="0">
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="User &amp; Profile Automation Testing" errors="0" failures="0" skipped="0" timestamp="2026-05-05T08:05:16" time="12.564" tests="10">
-    <testcase classname="User &amp; Profile Automation Testing" name="should update user profile with valid information or data type" time="0.767">
+  <testsuite name="Auth Automation Testing" errors="0" failures="0" skipped="1" timestamp="2026-05-06T04:10:43" time="12.718" tests="13">
+    <testcase classname="Auth Automation Testing" name="should register a new user with valid fields" time="1.041">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should access endpoint with valid bearer token of the user" time="0.874">
+    <testcase classname="Auth Automation Testing" name="should login with informations used to register" time="0.955">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should return 401 if attempt to bypass login into a user account is sensed" time="0.769">
+    <testcase classname="Auth Automation Testing" name="should reject user registering with an already-existing email" time="0.726">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should return 401 when anyone uses old/invalid tokens" time="0.717">
+    <testcase classname="Auth Automation Testing" name="should reject user registering with missing required fields" time="0.703">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should return profiles of users that are successfully registered" time="0.759">
+    <testcase classname="Auth Automation Testing" name="should not allow users login with incorrect password" time="0.701">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should return 400 if user profile that does not exist is searched" time="0.963">
+    <testcase classname="Auth Automation Testing" name="should not accept users logging in with unregistered email" time="0.648">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should return 400 if user profile is searched with letters instead of UUID" time="0.719">
+    <testcase classname="Auth Automation Testing" name="should not accept registration with empty fields" time="0.716">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should allow users update status successfully" time="0.836">
+    <testcase classname="Auth Automation Testing" name="should reject users trying to login with invalid email format (missing @)" time="0.663">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should reject attempt to update another user&apos;s status" time="0.877">
+    <testcase classname="Auth Automation Testing" name="should reject registration with extremely long email (300+ chars)" time="0.815">
     </testcase>
-    <testcase classname="User &amp; Profile Automation Testing" name="should handle SQL injection in URL path safely" time="0.752">
+    <testcase classname="Auth Automation Testing" name="should reject passwords that exceeds the maximum required length" time="0.707">
     </testcase>
-  </testsuite>
-  <testsuite name="Auth Automation Testing" errors="0" failures="0" skipped="1" timestamp="2026-05-05T08:05:28" time="16.407" tests="13">
-    <testcase classname="Auth Automation Testing" name="should register a new user with valid fields" time="1.191">
+    <testcase classname="Auth Automation Testing" name="should accept if users use special characters/emoji as part of their username" time="1.436">
     </testcase>
-    <testcase classname="Auth Automation Testing" name="should login with informations used to register" time="1.161">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should reject user registering with an already-existing email" time="1.672">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should reject user registering with missing required fields" time="0.75">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should not allow users login with incorrect password" time="0.822">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should not accept users logging in with unregistered email" time="0.865">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should not accept registration with empty fields" time="0.74">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should reject users trying to login with invalid email format (missing @)" time="0.786">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should reject registration with extremely long email (300+ chars)" time="1.07">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should reject passwords that exceeds the maximum required length" time="0.733">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should accept if users use special characters/emoji as part of their username" time="1.47">
-    </testcase>
-    <testcase classname="Auth Automation Testing" name="should reject SQL injection in Login Password" time="0.735">
+    <testcase classname="Auth Automation Testing" name="should reject SQL injection in Login Password" time="0.702">
     </testcase>
     <testcase classname="Auth Automation Testing" name="should reject XSS payload in name field" time="0">
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="Avatar Automation Testing" errors="0" failures="0" skipped="1" timestamp="2026-05-05T08:05:45" time="4.134" tests="4">
-    <testcase classname="Avatar Automation Testing" name="should upload avatar image while user is logged in" time="0.987">
+  <testsuite name="User &amp; Profile Automation Testing" errors="0" failures="0" skipped="0" timestamp="2026-05-06T04:10:56" time="11.227" tests="10">
+    <testcase classname="User &amp; Profile Automation Testing" name="should update user profile with valid information or data type" time="0.756">
     </testcase>
-    <testcase classname="Avatar Automation Testing" name="should list all available avatar users can choose from" time="0.799">
+    <testcase classname="User &amp; Profile Automation Testing" name="should access endpoint with valid bearer token of the user" time="0.691">
     </testcase>
-    <testcase classname="Avatar Automation Testing" name="should reject avatar upload if user is logged out" time="0.881">
+    <testcase classname="User &amp; Profile Automation Testing" name="should return 401 if attempt to bypass login into a user account is sensed" time="0.726">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing" name="should return 401 when anyone uses old/invalid tokens" time="0.717">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing" name="should return profiles of users that are successfully registered" time="0.724">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing" name="should return 400 if user profile that does not exist is searched" time="0.748">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing" name="should return 400 if user profile is searched with letters instead of UUID" time="0.728">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing" name="should allow users update status successfully" time="0.799">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing" name="should reject attempt to update another user&apos;s status" time="0.693">
+    </testcase>
+    <testcase classname="User &amp; Profile Automation Testing" name="should handle SQL injection in URL path safely" time="0.715">
+    </testcase>
+  </testsuite>
+  <testsuite name="Avatar Automation Testing" errors="0" failures="1" skipped="1" timestamp="2026-05-06T04:11:07" time="3.625" tests="4">
+    <testcase classname="Avatar Automation Testing" name="should upload avatar image while user is logged in" time="0.818">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 201
+    at Object.toBe (C:\Users\Hp\Documents\zedu-api-automation\tests\avatar.test.js:30:35)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Avatar Automation Testing" name="should list all available avatar users can choose from" time="0.674">
+    </testcase>
+    <testcase classname="Avatar Automation Testing" name="should reject avatar upload if user is logged out" time="0.707">
     </testcase>
     <testcase classname="Avatar Automation Testing" name="should reject users uploading a non-image file (e.g. .txt) as an avatar" time="0">
       <skipped/>
