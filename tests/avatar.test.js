@@ -27,14 +27,13 @@ describe("Avatar Automation Testing", () => {
       .set(authHeader)
       .attach("avatar", path.resolve(__dirname, "../utils/test-image.png")); 
 
-    expect([200, 201]).toContain(serverResponse.status);
+    expect(serverResponse.status).toBe(201);
   });
 
   test("should list all available avatar users can choose from", async () => {
     const serverResponse = await api.get("/avatars").set(authHeader);
 
-    expect([200, 201]).toContain(serverResponse.status);
-    expect(serverResponse.body).toBeDefined();
+    expect(serverResponse.status).toBe(200);
   });
 
   //  NEGATIVE TEST
