@@ -23,7 +23,7 @@ describe("Avatar Automation Testing", () => {
   test("should upload avatar image while user is logged in", async () => {
     // using .attach to send a physical file (binary upload)
     const serverResponse = await api
-      .post("/avatars")
+      .post("/avatars") 
       .set(authHeader)
       .attach("avatar", path.resolve(__dirname, "../utils/test-image.png")); 
 
